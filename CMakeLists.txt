@@ -16,6 +16,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
+set(QUARC_SOURCE_PATH "C:/Program Files/Quanser/QUARC/lib/win64")
+set(QUARC_INCLUDE_PATH "C:/Program Files/Quanser/QUARC/include")
+message(STATUS "Quanser Environment")
+message(STATUS ${QUARC_SOURCE_PATH})
+message(STATUS ${QUARC_INCLUDE_PATH})
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -103,9 +108,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES quanser_bsc
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES quanser_bsc
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -116,14 +121,27 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include/quanser_bsc
   ${catkin_INCLUDE_DIRS}
+  ${QUARC_INCLUDE_PATH}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/quanser_bsc.cpp
 # )
+
+
+
+add_executable(pub_quanser src/publisher.cpp src/quanser_ros.cpp)
+
+target_link_libraries(pub_quanser
+   ${catkin_LIBRARIES} 
+   ${QUARC_SOURCE_PATH}/hil.lib
+   ${QUARC_SOURCE_PATH}/quanser_runtime.lib
+   ${QUARC_SOURCE_PATH}/quanser_common.lib
+   )
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
