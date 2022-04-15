@@ -24,21 +24,21 @@ int main(int argc, char **argv)
   t_error result;
   int count = 0;
   quanser::QuanserBoard quanser_board;
-  ROS_INFO("Quansedddd");
-  quanser_board.quanser_initialize();
-  //quanser_initialize();
+    
+
   
 
   
-  ROS_INFO("Quanse");
+  ROS_INFO("Quanser opening...");
   result = quanser_board.open_quanser();
-  ROS_INFO("Quanser cddddd");
   if (result < 0){
     ROS_INFO("Quanser cannot open");
     return -1;
   }
   ROS_INFO("Quanser board open!!!!!");
-
+    ROS_INFO("Quanser initialize...");
+  quanser_board.quanser_initialize();
+  //quanser_initialize();
   while (ros::ok())
   {
     std_msgs::String msg;
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     {
       ROS_INFO("Writing succesfull!!!!!");
     }
-
+    ROS_INFO("reading encoders...");
     result = quanser_board.read_encoder();
 
     std::stringstream ss;
