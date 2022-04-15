@@ -133,7 +133,7 @@ include_directories(
 
 
 
-add_executable(pub_quanser src/publisher.cpp src/quanser_ros.cpp)
+add_executable(pub_quanser src/publisher.cpp src/quanser_ros.cpp src/quanser_boards.cpp)
 
 target_link_libraries(pub_quanser
    ${catkin_LIBRARIES} 

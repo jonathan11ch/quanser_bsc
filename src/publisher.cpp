@@ -1,7 +1,8 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
-#include "quanser_ros.h"
+//#include "quanser_ros.h"
+#include "quanser_boards.h"
 #include "hil.h"
 #include "quanser_signal.h"
 #include "quanser_messages.h"
@@ -18,15 +19,20 @@ int main(int argc, char **argv)
   ros::Publisher angle_pub = n.advertise<std_msgs::Float32>("angles", 1000);
   ros::Publisher vel_pub = n.advertise<std_msgs::Float32>("vel", 1000);
 
-  ros::Rate loop_rate(1000);
-
-  quanser_initialize();
-
+  ros::Rate loop_rate(1);
 
   t_error result;
-  
   int count = 0;
-  result = open_quanser();
+  quanser::QuanserBoard quanser_board;
+  ROS_INFO("Quansedddd");
+  quanser_board.quanser_initialize();
+  //quanser_initialize();
+  
+
+  
+  ROS_INFO("Quanse");
+  result = quanser_board.open_quanser();
+  ROS_INFO("Quanser cddddd");
   if (result < 0){
     ROS_INFO("Quanser cannot open");
     return -1;
@@ -37,25 +43,25 @@ int main(int argc, char **argv)
   {
     std_msgs::String msg;
     
-    init_inputs(); 
-    result = write_analog();
+    //init_inputs(); 
+    //result = write_analog();
     if (result >= 0)
     {
       ROS_INFO("Writing succesfull!!!!!");
     }
 
-    result = read_encoder();
+    result = quanser_board.read_encoder();
 
     std::stringstream ss;
     ss << "hello world " << count;
     msg.data = ss.str();
 
     //ROS_INFO("%s", msg.data.c_str());
-    extern float encoder_rad[NUM_ENCODER_CHANNELS];
-    extern float encoder_rad_per_sec[NUM_ENCODER_CHANNELS];
+    //extern float encoder_rad[NUM_ENCODER_CHANNELS];
+    //extern float encoder_rad_per_sec[NUM_ENCODER_CHANNELS];
     float angles, vel;
-    angles = encoder_rad[0];
-    vel = encoder_rad_per_sec[0];
+    angles = quanser_board.encoder_rad[0];
+    vel = quanser_board.encoder_rad_per_sec[0];
 
     angle_pub.publish(angles);
     vel_pub.publish(vel);
@@ -65,7 +71,7 @@ int main(int argc, char **argv)
     loop_rate.sleep();
     ++count;
   }
-  close_quanser();
+  quanser_board.close_quanser();
 
   return 0;
 }
